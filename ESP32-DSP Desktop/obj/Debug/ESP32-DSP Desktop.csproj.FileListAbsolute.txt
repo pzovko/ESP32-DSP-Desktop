@@ -1,0 +1,18 @@
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\bin\Debug\ESP32-DSP Desktop.exe.config
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\bin\Debug\ESP32-DSP Desktop.exe
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\bin\Debug\ESP32-DSP Desktop.pdb
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\bin\Debug\InTheHand.Net.Bluetooth.dll
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\bin\Debug\ScottPlot.dll
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\bin\Debug\ScottPlot.WinForms.dll
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\bin\Debug\System.Drawing.Common.dll
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\bin\Debug\System.ValueTuple.dll
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\bin\Debug\InTheHand.Net.Bluetooth.xml
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\bin\Debug\ScottPlot.xml
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\bin\Debug\System.ValueTuple.xml
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\obj\Debug\ESP32_DSP_Desktop.MainWindow.resources
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\obj\Debug\ESP32_DSP_Desktop.Properties.Resources.resources
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\obj\Debug\ESP32-DSP Desktop.csproj.GenerateResource.cache
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\obj\Debug\ESP32-DSP Desktop.csproj.CopyComplete
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\obj\Debug\ESP32-DSP Desktop.exe
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\obj\Debug\ESP32-DSP Desktop.pdb
+C:\Users\Petar\source\repos\ESP32-DSP Desktop\ESP32-DSP Desktop\obj\Debug\ESP32-DSP Desktop.csprojAssemblyReference.cache
