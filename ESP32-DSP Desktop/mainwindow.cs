@@ -22,7 +22,13 @@ namespace ESP32_DSP_Desktop
             InitializeComponent();
 
             dataPlot.Plot.Style(Style.Gray1);
+            dataPlot.Plot.SetAxisLimitsY(0, 4095);
+            dataPlot.Plot.XLabel("Time (s)");
+            dataPlot.Plot.YLabel("Amplitude");
+
             fftPlot.Plot.Style(Style.Gray1);
+            fftPlot.Plot.XLabel("Frequency (kHz)");
+            fftPlot.Plot.YLabel("Amplitude");
         }
 
         private void DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -72,7 +78,7 @@ namespace ESP32_DSP_Desktop
 
                     ESP.MaxPlotIndex = (double)15000/ESP.SampleFrequency;
                   //  SignalPlot.MaxRenderIndex = 1;
-                    dataPlot.Plot.SetAxisLimitsY(0, 4095);
+                    
                     dataPlot.Plot.SetAxisLimitsX(ESP.MinPlotIndex, ESP.MaxPlotIndex); //buffer size / samplerate
 
                     SignalPlot = dataPlot.Plot.AddSignal(ESP.DataBuffer,5000);

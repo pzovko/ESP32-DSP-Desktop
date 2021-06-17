@@ -32,16 +32,16 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnLoadFIR = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.cbBaudrate = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.tbmSampleRate = new System.Windows.Forms.MaskedTextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.tbmFFTLen = new System.Windows.Forms.MaskedTextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tbmFilterLen = new System.Windows.Forms.MaskedTextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.maskedTextBox1 = new System.Windows.Forms.MaskedTextBox();
             this.openFilterCoef = new System.Windows.Forms.OpenFileDialog();
             this.filterPlot = new ScottPlot.FormsPlot();
             this.groupBox1.SuspendLayout();
@@ -70,7 +70,7 @@
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(169, 33);
             this.btnCancel.TabIndex = 8;
-            this.btnCancel.Text = "Cancel";
+            this.btnCancel.Text = "Close";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click_1);
             // 
@@ -103,6 +103,17 @@
             this.groupBox1.TabIndex = 11;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Data settings";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Nirmala UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label1.Location = new System.Drawing.Point(205, 37);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(21, 15);
+            this.label1.TabIndex = 16;
+            this.label1.Text = "Hz";
             // 
             // cbBaudrate
             // 
@@ -167,7 +178,7 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.maskedTextBox1);
+            this.groupBox2.Controls.Add(this.tbmFFTLen);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.tbmFilterLen);
             this.groupBox2.Controls.Add(this.label6);
@@ -180,6 +191,21 @@
             this.groupBox2.TabIndex = 16;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Filter settings";
+            // 
+            // tbmFFTLen
+            // 
+            this.tbmFFTLen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(63)))), ((int)(((byte)(73)))));
+            this.tbmFFTLen.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbmFFTLen.Font = new System.Drawing.Font("Nirmala UI", 10.25F, System.Drawing.FontStyle.Bold);
+            this.tbmFFTLen.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.tbmFFTLen.Location = new System.Drawing.Point(105, 74);
+            this.tbmFFTLen.Mask = "0000";
+            this.tbmFFTLen.Name = "tbmFFTLen";
+            this.tbmFFTLen.PromptChar = ' ';
+            this.tbmFFTLen.Size = new System.Drawing.Size(121, 26);
+            this.tbmFFTLen.TabIndex = 16;
+            this.tbmFFTLen.Text = "1024";
+            this.tbmFFTLen.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label5
             // 
@@ -199,12 +225,11 @@
             this.tbmFilterLen.Font = new System.Drawing.Font("Nirmala UI", 10.25F, System.Drawing.FontStyle.Bold);
             this.tbmFilterLen.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.tbmFilterLen.Location = new System.Drawing.Point(105, 32);
-            this.tbmFilterLen.Mask = "000";
             this.tbmFilterLen.Name = "tbmFilterLen";
             this.tbmFilterLen.PromptChar = ' ';
+            this.tbmFilterLen.ReadOnly = true;
             this.tbmFilterLen.Size = new System.Drawing.Size(121, 26);
             this.tbmFilterLen.TabIndex = 14;
-            this.tbmFilterLen.Text = "64";
             this.tbmFilterLen.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label6
@@ -217,32 +242,6 @@
             this.label6.Size = new System.Drawing.Size(76, 15);
             this.label6.TabIndex = 13;
             this.label6.Text = "Filter length:";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Nirmala UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label1.Location = new System.Drawing.Point(205, 37);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(21, 15);
-            this.label1.TabIndex = 16;
-            this.label1.Text = "Hz";
-            // 
-            // maskedTextBox1
-            // 
-            this.maskedTextBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(63)))), ((int)(((byte)(73)))));
-            this.maskedTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.maskedTextBox1.Font = new System.Drawing.Font("Nirmala UI", 10.25F, System.Drawing.FontStyle.Bold);
-            this.maskedTextBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.maskedTextBox1.Location = new System.Drawing.Point(105, 74);
-            this.maskedTextBox1.Mask = "0000";
-            this.maskedTextBox1.Name = "maskedTextBox1";
-            this.maskedTextBox1.PromptChar = ' ';
-            this.maskedTextBox1.Size = new System.Drawing.Size(121, 26);
-            this.maskedTextBox1.TabIndex = 16;
-            this.maskedTextBox1.Text = "1024";
-            this.maskedTextBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // openFilterCoef
             // 
@@ -296,7 +295,7 @@
         private System.Windows.Forms.MaskedTextBox tbmFilterLen;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.MaskedTextBox maskedTextBox1;
+        private System.Windows.Forms.MaskedTextBox tbmFFTLen;
         private System.Windows.Forms.OpenFileDialog openFilterCoef;
         private ScottPlot.FormsPlot filterPlot;
     }

@@ -20,6 +20,7 @@ namespace ESP32_DSP_Desktop
         {
             InitializeComponent();
             filterPlot.Plot.Style(Style.Gray1);
+            filterPlot.Plot.XLabel("Time (s)");
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -33,13 +34,14 @@ namespace ESP32_DSP_Desktop
 
         private void btnApply_Click(object sender, EventArgs e)
         {
-            // MessageBox.Show(cbBaudrate.SelectedItem.ToString());
-           // MessageBox.Show(tbmSampleRate.Text);
-            Settings.FilterCoeff.Add(10.534534563);
-            Settings.FilterCoeff.Add(10.534534563);
-            Settings.FilterCoeff.Add(10.534534563);
+            double fftLen = double.Parse(tbmFFTLen.Text);
+            if ((Math.Log(fftLen, 2) % 1) != 0)
+                MessageBox.Show("FFT len must be power of 2!", "Error");
+            else
+                Settings.FftSamples = (uint)fftLen;
 
-            MessageBox.Show(Settings.FilterCoeff.Count.ToString());
+            if (Settings.FilterCoeff.Count == 0)
+                MessageBox.Show("No filter loaded", "Error");
         }
 
         private void btnLoadFIR_Click(object sender, EventArgs e)
@@ -55,9 +57,9 @@ namespace ESP32_DSP_Desktop
 
             double xMax;
 
-            Settings.SampleRate = 100; // UInt16.Parse(tbmSampleRate.Text);
-
-
+            Settings.SampleRate =  UInt16.Parse(tbmSampleRate.Text);
+            Settings.FilterCoeff.Clear();      
+                        
             fileName = openFilterCoef.FileName;
             fileData = File.ReadAllText(fileName);
 
@@ -79,7 +81,9 @@ namespace ESP32_DSP_Desktop
                 
             var nsi = new ScottPlot.Statistics.Interpolation.PeriodicSpline(xPoints, Settings.FilterCoeff.ToArray(),  resolution:20);
 
-            filterPlot.Plot.AddScatter(nsi.interpolatedXs, nsi.interpolatedYs, Color.Blue, markerSize: 3);
+            filterPlot.Plot.AddScatter(nsi.interpolatedXs, nsi.interpolatedYs, Color.FromArgb(0, 122, 204), markerSize: 3);
+
+            tbmFilterLen.Text = Settings.FilterCoeff.Count.ToString();
 
             filterPlot.Plot.AxisAuto();
             filterPlot.Render();
