@@ -15,7 +15,7 @@ namespace ESP32_DSP_Desktop
     public partial class MainWindow : Form
     {
         ScottPlot.Plottable.SignalPlot SignalPlot;
-        ScottPlot.Plottable.SignalPlot FFTPlot;
+        //ScottPlot.Plottable.SignalPlot FFTPlot;
 
         public MainWindow()
         {
@@ -36,9 +36,9 @@ namespace ESP32_DSP_Desktop
                 {
                    ESP.DataBuffer[ESP.DataIndex] = Double.Parse(ESP.portHandle.ReadLine());
                    ESP.DataIndex++;
-                    ESP.Tick++;
-                    if (ESP.DataIndex == 15000)
-                       ESP.DataIndex = 0;
+                   ESP.Tick++;
+                   if (ESP.DataIndex == 15000)
+                      ESP.DataIndex = 0;
                 }
             }
             catch { }
@@ -123,6 +123,12 @@ namespace ESP32_DSP_Desktop
         private void MainWindow_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Form settingsWindow = new settingswindow();
+            settingsWindow.Show();
         }
     }
 }

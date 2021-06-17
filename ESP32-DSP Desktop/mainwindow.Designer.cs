@@ -35,7 +35,7 @@
             this.avaiableDevices = new System.Windows.Forms.ListBox();
             this.refresh = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.button4 = new System.Windows.Forms.Button();
+            this.btnSettings = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
@@ -118,7 +118,7 @@
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.button4, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.btnSettings, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.button3, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.button2, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.button1, 0, 0);
@@ -133,17 +133,18 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(200, 275);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
-            // button4
+            // btnSettings
             // 
-            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button4.Font = new System.Drawing.Font("Nirmala UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button4.ForeColor = System.Drawing.Color.Silver;
-            this.button4.Location = new System.Drawing.Point(3, 139);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(197, 62);
-            this.button4.TabIndex = 6;
-            this.button4.Text = "Filter";
-            this.button4.UseVisualStyleBackColor = true;
+            this.btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSettings.Font = new System.Drawing.Font("Nirmala UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnSettings.ForeColor = System.Drawing.Color.Silver;
+            this.btnSettings.Location = new System.Drawing.Point(3, 139);
+            this.btnSettings.Name = "btnSettings";
+            this.btnSettings.Size = new System.Drawing.Size(197, 62);
+            this.btnSettings.TabIndex = 6;
+            this.btnSettings.Text = "Settings";
+            this.btnSettings.UseVisualStyleBackColor = true;
+            this.btnSettings.Click += new System.EventHandler(this.button4_Click);
             // 
             // button3
             // 
@@ -192,6 +193,7 @@
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
             this.statusStrip1.Size = new System.Drawing.Size(1024, 44);
+            this.statusStrip1.Stretch = false;
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -245,7 +247,7 @@
             this.MinimizeBox = false;
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
+            this.Text = "MainWindow";
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.panel1.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -269,7 +271,7 @@
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private ScottPlot.FormsPlot dataPlot;
         private System.Windows.Forms.Timer graphPlotTimer;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button btnSettings;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
         private ScottPlot.FormsPlot fftPlot;
