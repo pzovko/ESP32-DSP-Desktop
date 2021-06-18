@@ -44,6 +44,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.openFilterCoef = new System.Windows.Forms.OpenFileDialog();
             this.filterPlot = new ScottPlot.FormsPlot();
+            this.cbDomain = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -178,6 +179,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.cbDomain);
             this.groupBox2.Controls.Add(this.tbmFFTLen);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.tbmFilterLen);
@@ -255,6 +257,19 @@
             this.filterPlot.Size = new System.Drawing.Size(723, 396);
             this.filterPlot.TabIndex = 17;
             // 
+            // cbDomain
+            // 
+            this.cbDomain.AutoSize = true;
+            this.cbDomain.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cbDomain.Font = new System.Drawing.Font("Nirmala UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.cbDomain.Location = new System.Drawing.Point(105, 106);
+            this.cbDomain.Name = "cbDomain";
+            this.cbDomain.Size = new System.Drawing.Size(125, 19);
+            this.cbDomain.TabIndex = 17;
+            this.cbDomain.Text = "Frequency domain";
+            this.cbDomain.UseVisualStyleBackColor = true;
+            this.cbDomain.CheckedChanged += new System.EventHandler(this.cbDomain_CheckedChanged);
+            // 
             // settingswindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -298,5 +313,6 @@
         private System.Windows.Forms.MaskedTextBox tbmFFTLen;
         private System.Windows.Forms.OpenFileDialog openFilterCoef;
         private ScottPlot.FormsPlot filterPlot;
+        private System.Windows.Forms.CheckBox cbDomain;
     }
 }

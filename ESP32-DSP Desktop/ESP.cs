@@ -12,7 +12,7 @@ namespace ESP32_DSP_Desktop
         static string btPort;
         static SerialPort hportHandle;
         static int baud;
-        static double[] dataBuffer = new double[15000];
+        static double[] dataBuffer = new double[15360];
         static int dataIndex = 0;
         static double minPlotIndex = 0;
         static double maxPlotIndex;
