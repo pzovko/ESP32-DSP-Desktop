@@ -38,13 +38,11 @@
             this.tbmSampleRate = new System.Windows.Forms.MaskedTextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.tbmFFTLen = new System.Windows.Forms.MaskedTextBox();
-            this.label5 = new System.Windows.Forms.Label();
+            this.cbDomain = new System.Windows.Forms.CheckBox();
             this.tbmFilterLen = new System.Windows.Forms.MaskedTextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.openFilterCoef = new System.Windows.Forms.OpenFileDialog();
             this.filterPlot = new ScottPlot.FormsPlot();
-            this.cbDomain = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -163,7 +161,6 @@
             this.tbmSampleRate.PromptChar = ' ';
             this.tbmSampleRate.Size = new System.Drawing.Size(94, 26);
             this.tbmSampleRate.TabIndex = 14;
-            this.tbmSampleRate.Text = "5000";
             this.tbmSampleRate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label3
@@ -180,8 +177,6 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.cbDomain);
-            this.groupBox2.Controls.Add(this.tbmFFTLen);
-            this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.tbmFilterLen);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -194,31 +189,18 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Filter settings";
             // 
-            // tbmFFTLen
+            // cbDomain
             // 
-            this.tbmFFTLen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(63)))), ((int)(((byte)(73)))));
-            this.tbmFFTLen.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbmFFTLen.Font = new System.Drawing.Font("Nirmala UI", 10.25F, System.Drawing.FontStyle.Bold);
-            this.tbmFFTLen.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.tbmFFTLen.Location = new System.Drawing.Point(105, 74);
-            this.tbmFFTLen.Mask = "0000";
-            this.tbmFFTLen.Name = "tbmFFTLen";
-            this.tbmFFTLen.PromptChar = ' ';
-            this.tbmFFTLen.Size = new System.Drawing.Size(121, 26);
-            this.tbmFFTLen.TabIndex = 16;
-            this.tbmFFTLen.Text = "1024";
-            this.tbmFFTLen.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Nirmala UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label5.Location = new System.Drawing.Point(22, 79);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(67, 15);
-            this.label5.TabIndex = 15;
-            this.label5.Text = "FFT length:";
+            this.cbDomain.AutoSize = true;
+            this.cbDomain.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cbDomain.Font = new System.Drawing.Font("Nirmala UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.cbDomain.Location = new System.Drawing.Point(105, 81);
+            this.cbDomain.Name = "cbDomain";
+            this.cbDomain.Size = new System.Drawing.Size(125, 19);
+            this.cbDomain.TabIndex = 17;
+            this.cbDomain.Text = "Frequency domain";
+            this.cbDomain.UseVisualStyleBackColor = true;
+            this.cbDomain.CheckedChanged += new System.EventHandler(this.cbDomain_CheckedChanged);
             // 
             // tbmFilterLen
             // 
@@ -257,19 +239,6 @@
             this.filterPlot.Size = new System.Drawing.Size(723, 396);
             this.filterPlot.TabIndex = 17;
             // 
-            // cbDomain
-            // 
-            this.cbDomain.AutoSize = true;
-            this.cbDomain.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cbDomain.Font = new System.Drawing.Font("Nirmala UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.cbDomain.Location = new System.Drawing.Point(105, 106);
-            this.cbDomain.Name = "cbDomain";
-            this.cbDomain.Size = new System.Drawing.Size(125, 19);
-            this.cbDomain.TabIndex = 17;
-            this.cbDomain.Text = "Frequency domain";
-            this.cbDomain.UseVisualStyleBackColor = true;
-            this.cbDomain.CheckedChanged += new System.EventHandler(this.cbDomain_CheckedChanged);
-            // 
             // settingswindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -306,11 +275,9 @@
         private System.Windows.Forms.ComboBox cbBaudrate;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.MaskedTextBox tbmFilterLen;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.MaskedTextBox tbmFFTLen;
         private System.Windows.Forms.OpenFileDialog openFilterCoef;
         private ScottPlot.FormsPlot filterPlot;
         private System.Windows.Forms.CheckBox cbDomain;

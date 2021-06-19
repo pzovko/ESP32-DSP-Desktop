@@ -24,6 +24,7 @@ namespace ESP32_DSP_Desktop
         {
             InitializeComponent();
 
+            tbmSampleRate.Text = Settings.SampleRate.ToString();
 
             filterPlot.Plot.Style(Style.Gray1);
             filterPlot.Plot.Title("Time domain");
@@ -42,14 +43,16 @@ namespace ESP32_DSP_Desktop
 
         private void btnApply_Click(object sender, EventArgs e)
         {
-            double fftLen = double.Parse(tbmFFTLen.Text);
-            if ((Math.Log(fftLen, 2) % 1) != 0)
-                MessageBox.Show("FFT len must be power of 2!", "Error");
-            else
-                Settings.FftSamples = (uint)fftLen;
+            Settings.SampleRate = UInt16.Parse(tbmSampleRate.Text);
+            ESP.baudRate = Int32.Parse(cbBaudrate.SelectedItem.ToString());
 
-            if (Settings.FilterCoeff.Count == 0)
-                MessageBox.Show("No filter loaded", "Error");
+            var myParent = (MainWindow)this.Owner;
+            myParent.ApplySettings();
+
+            this.Close();
+
+          //  if (Settings.FilterCoeff.Count == 0)
+          //      MessageBox.Show("No filter loaded", "Warning", MessageBoxButtons.OK);
         }
 
         private void btnLoadFIR_Click(object sender, EventArgs e)
@@ -120,7 +123,6 @@ namespace ESP32_DSP_Desktop
                 filterPlot.Plot.XLabel("Frequency (kHz)");
 
                 dft.Initialize((uint)Settings.FilterLenght);
-               // MessageBox.Show(Settings.FilterLenght.ToString());
 
                 Complex[] cSpectrum = dft.Execute(Settings.FilterCoeff.ToArray());
 

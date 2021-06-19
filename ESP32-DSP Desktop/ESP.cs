@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
+using System.Collections.Concurrent;
 
 namespace ESP32_DSP_Desktop
 {
@@ -12,14 +13,13 @@ namespace ESP32_DSP_Desktop
         static string btPort;
         static SerialPort hportHandle;
         static int baud;
-        static double[] dataBuffer = new double[15360];
-        static int dataIndex = 0;
-        static double minPlotIndex = 0;
-        static double maxPlotIndex;
-        static double tick = 0;
-        static double sampleFrequency = 5000;
-       
-       
+        static double[] plotBuffer;
+        static ConcurrentQueue<double> buffer = new ConcurrentQueue<double>();
+
+        static double[] dspSpectrum;
+        static double[] dspFreqSpan; 
+
+
         public static string BluetoothPort
         {
             set { btPort = value; }
@@ -38,11 +38,22 @@ namespace ESP32_DSP_Desktop
             get { return baud; }
         }
 
-        public static double[] DataBuffer { get => dataBuffer; set => dataBuffer = value; }
-        public static int DataIndex { get => dataIndex; set => dataIndex = value; }
-        public static double MinPlotIndex { get => minPlotIndex; set => minPlotIndex = value; }
-        public static double MaxPlotIndex { get => maxPlotIndex; set => maxPlotIndex = value; }
-        public static double Tick { get => tick; set => tick = value; }
-        public static double SampleFrequency { get => sampleFrequency; set => sampleFrequency = value; }
+        public static double[] PlotBuffer { get => plotBuffer; set => plotBuffer = value; }
+        public static ConcurrentQueue<double> Buffer { get => buffer; set => buffer = value; }
+        public static double[] DspFreqSpan { get => dspFreqSpan; set => dspFreqSpan = value; }
+        public static double[] DspSpectrum { get => dspSpectrum; set => dspSpectrum = value; }
+
+        public static bool IsPow2(int x)
+        {
+            return (x != 0) && ((x & (x - 1)) == 0);
+        }
+
+        public static uint NextPow2(uint x)
+        {
+            uint power = 1;
+            while (power < x)
+                power *= 2;
+            return power;
+        }
     }
 }

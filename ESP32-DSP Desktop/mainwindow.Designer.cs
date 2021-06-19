@@ -217,7 +217,7 @@
             // 
             // graphPlotTimer
             // 
-            this.graphPlotTimer.Interval = 10;
+            this.graphPlotTimer.Interval = 1;
             this.graphPlotTimer.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // fftPlot

@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
@@ -16,25 +17,24 @@ namespace ESP32_DSP_Desktop
 {
     public partial class MainWindow : Form
     {
-        FFT fft = new FFT();
-        int iFFTcount = 1;
+        FFT dspFFT = new FFT();
         ScottPlot.Plottable.SignalPlot SignalPlot;
-        //ScottPlot.Plottable.SignalPlot FFTPlot;
+        int i = 0;
 
         public MainWindow()
         {
             InitializeComponent();
-
+ 
             dataPlot.Plot.Style(Style.Gray1);
-            dataPlot.Plot.SetAxisLimitsY(0, 4095);
-            dataPlot.Plot.XLabel("Time (s)");
+            dataPlot.Plot.XLabel("Samples per second");
             dataPlot.Plot.YLabel("Amplitude");
 
             fftPlot.Plot.Style(Style.Gray1);
-            fftPlot.Plot.XLabel("Frequency (kHz)");
+            fftPlot.Plot.XLabel("Frequency (Hz)");
             fftPlot.Plot.YLabel("Amplitude");
-            // fft.Initialize(Settings.FftSamples);
-            fft.Initialize(Settings.FftSamples*2);
+            fftPlot.Plot.SetAxisLimitsY(0, 4095);
+
+            ApplySettings();
             GetPorts();
         }
 
@@ -42,17 +42,8 @@ namespace ESP32_DSP_Desktop
         {
             try
             {
-                int bytesToRead = ESP.portHandle.BytesToRead;
-                byte[] readBuffer = new byte[bytesToRead];
-
-                while(ESP.portHandle.BytesToRead > 0)
-                {
-                   ESP.DataBuffer[ESP.DataIndex] = Double.Parse(ESP.portHandle.ReadLine());
-                   ESP.DataIndex++;
-                   ESP.Tick++;
-                   if (ESP.DataIndex == (15360-1))
-                      ESP.DataIndex = 0;
-                }
+                while (ESP.portHandle.BytesToRead > 0)
+                    ESP.Buffer.Enqueue(Double.Parse(ESP.portHandle.ReadLine()));
             }
             catch { }
         }
@@ -79,12 +70,21 @@ namespace ESP32_DSP_Desktop
                     ESP.portHandle.DataReceived += new SerialDataReceivedEventHandler(DataReceived);
                     ESP.portHandle.Open();
 
-                    ESP.MaxPlotIndex = (double)15360/ESP.SampleFrequency;
-                  //  SignalPlot.MaxRenderIndex = 1;
-                    
-                    dataPlot.Plot.SetAxisLimitsX(ESP.MinPlotIndex, ESP.MaxPlotIndex); //buffer size / samplerate
 
-                    SignalPlot = dataPlot.Plot.AddSignal(ESP.DataBuffer,5000);
+                    dataPlot.Plot.Clear();
+                    fftPlot.Plot.Clear();
+
+                    ApplySettings();
+
+
+                   /* var legend  = dataPlot.Plot.Legend();
+                    legend.FontName = "Nirmala UI";
+                    legend.FontSize = 14;
+                    legend.FillColor = Color.FromArgb(49, 54, 58);
+                    legend.FontColor = Color.White;*/
+
+                    SignalPlot = dataPlot.Plot.AddSignal(ESP.PlotBuffer, label: "test");
+
                     graphPlotTimer.Enabled = true;
                 }
                 catch (Exception ex)
@@ -97,7 +97,6 @@ namespace ESP32_DSP_Desktop
         private void disconnect_Click_1(object sender, EventArgs e)
         {
             ESP.portHandle.Close();
-           // ScottPlot.Plottable.SignalPlot
         }
 
         private void formsPlot1_Load(object sender, EventArgs e)
@@ -107,32 +106,29 @@ namespace ESP32_DSP_Desktop
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            graphPlotTimer.Enabled = false;
-           
-            if(ESP.DataIndex >  1)
-                SignalPlot.MaxRenderIndex = ESP.DataIndex - 1;
+           graphPlotTimer.Enabled = false;
+            
 
-            if((ESP.Tick/ESP.SampleFrequency) > (ESP.MaxPlotIndex - (ESP.SampleFrequency / (double)15000)))
+           if(ESP.Buffer.Count > 0)
             {
-                ESP.MinPlotIndex = ESP.MinPlotIndex + ESP.SampleFrequency / (double)15000; //SignalPlot.MaxRenderIndex/5000 - 100;
-                ESP.MaxPlotIndex += (ESP.SampleFrequency / (double)15000);
+               
+                while (ESP.Buffer.TryDequeue(out ESP.PlotBuffer[i]) && !ESP.Buffer.IsEmpty)
+                {
+                    i++;
 
-                dataPlot.Plot.SetAxisLimitsX(ESP.MinPlotIndex, ESP.MaxPlotIndex);
-            }
+                    if (i >= Settings.SampleRate)
+                    {
+                        i = 0;  
+                        break;    
+                    }
+                    SignalPlot.MaxRenderIndex = i;
+                }
 
-            if (ESP.DataIndex >= (2048*iFFTcount))//Settings.FftSamples)
-            {
-                iFFTcount++;
-              //  MessageBox.Show("test");
                 DoFFT();
-                if (iFFTcount == 7)
-                    iFFTcount = 0;
 
+                dataPlot.RenderRequest();
             }
-                
-
-            dataPlot.Render();
-            graphPlotTimer.Enabled = true;
+           graphPlotTimer.Enabled = true;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -148,62 +144,53 @@ namespace ESP32_DSP_Desktop
         private void button4_Click(object sender, EventArgs e)
         {
             Form settingsWindow = new settingswindow();
-            settingsWindow.Show();
+            settingsWindow.Show(this);
         }
 
         private void DoFFT()
         {
-            double[] temp = new double[2048];
-            int n = 0;
+            ESP.PlotBuffer[0] = 0;
+
+            Complex[] cSpectrum = dspFFT.Execute(ESP.PlotBuffer);
+
+            ESP.DspSpectrum= DSP.ConvertComplex.ToMagnitude(cSpectrum);
+            ESP.DspFreqSpan = dspFFT.FrequencySpan(Settings.SampleRate);
 
             fftPlot.Plot.Clear();
 
-            
+            fftPlot.Plot.AddSignalXY(ESP.DspFreqSpan, ESP.DspSpectrum, Color.FromArgb(0, 122, 204));
 
-            if (iFFTcount == 2)
-                n = 2048 * (iFFTcount - 1);
-
-            for (int i = 0; i < 2048; i++)
-                temp[i] = ESP.DataBuffer[i + n];//(double)4096;//[i+n];
-            temp[0] = 0;
-           // temp = NormalizeData(temp, 0, 1).ToArray();
-
-            Complex[] cSpectrum = fft.Execute(temp);
-
-            double[] lmSpectrum = DSP.ConvertComplex.ToMagnitude(cSpectrum);
-            double[] freqSpan = fft.FrequencySpan(Settings.SampleRate);
-
-            lmSpectrum =  DSP.Math.RemoveMean(lmSpectrum);
-            //for(int i = 0; i < 10; i++)
-            // MessageBox.Show(lmSpectrum[200].ToString());
-
-          //  fftPlot.Plot.AddScatter(freqSpan, lmSpectrum, Color.FromArgb(0, 122, 204), markerSize: 3);
-            fftPlot.Plot.AddSignalXY(freqSpan, lmSpectrum, Color.FromArgb(0, 122, 204));
             fftPlot.Plot.AxisAuto();
-            //  fftPlot.Plot.Render();
-
-            //MessageBox.Show("test");
-
+            fftPlot.RenderRequest();
         }
 
         private void GetPorts()
         {
             string[] ports = SerialPort.GetPortNames();
+
             avaiableDevices.Items.Clear();
             foreach (string port in ports)
                 avaiableDevices.Items.Add(port);
         }
 
-        private static double[] NormalizeData(IEnumerable<double> data, int min, int max)
+        public void ApplySettings()
         {
-            double dataMax = data.Max();
-            double dataMin = data.Min();
-            double range = dataMax - dataMin;
+            dataPlot.Plot.Clear();
+            fftPlot.Plot.Clear();
 
-            return data
-                .Select(d => (d - dataMin) / range)
-                .Select(n => ((1 - n) * min + n * max))
-                .ToArray();
+            dataPlot.Plot.SetAxisLimitsY(0, 4095);
+            dataPlot.Plot.SetAxisLimitsX(0, Settings.SampleRate);
+            
+            ESP.PlotBuffer = new double[(int)Settings.SampleRate];
+
+            if(ESP.IsPow2(Settings.SampleRate))
+                dspFFT.Initialize(Settings.SampleRate);
+            else
+            {
+                uint n = ESP.NextPow2(Settings.SampleRate);
+                dspFFT.Initialize(Settings.SampleRate, (n - Settings.SampleRate));
+
+            }
         }
     }
 }
