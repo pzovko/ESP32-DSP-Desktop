@@ -14,7 +14,8 @@ namespace ESP32_DSP_Desktop
         static SerialPort hportHandle;
         static int baud;
         static double[] plotBuffer;
-        static ConcurrentQueue<double> buffer = new ConcurrentQueue<double>();
+        static double[] filterBuffer;
+        static ConcurrentQueue<int> buffer = new ConcurrentQueue<int>();
 
         static double[] dspSpectrum;
         static double[] dspFreqSpan; 
@@ -39,7 +40,8 @@ namespace ESP32_DSP_Desktop
         }
 
         public static double[] PlotBuffer { get => plotBuffer; set => plotBuffer = value; }
-        public static ConcurrentQueue<double> Buffer { get => buffer; set => buffer = value; }
+        public static double[] FilterBuffer { get => filterBuffer; set => filterBuffer = value; }
+        public static ConcurrentQueue<int> Buffer { get => buffer; set => buffer = value; }
         public static double[] DspFreqSpan { get => dspFreqSpan; set => dspFreqSpan = value; }
         public static double[] DspSpectrum { get => dspSpectrum; set => dspSpectrum = value; }
 
@@ -54,6 +56,11 @@ namespace ESP32_DSP_Desktop
             while (power < x)
                 power *= 2;
             return power;
+        }
+
+        public static void UnpackData(double data)
+        {
+
         }
     }
 }

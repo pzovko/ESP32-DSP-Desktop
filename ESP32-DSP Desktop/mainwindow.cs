@@ -19,6 +19,8 @@ namespace ESP32_DSP_Desktop
     {
         FFT dspFFT = new FFT();
         ScottPlot.Plottable.SignalPlot SignalPlot;
+        ScottPlot.Plottable.SignalPlot FilterPlot;
+
         int i = 0;
 
         public MainWindow()
@@ -43,7 +45,7 @@ namespace ESP32_DSP_Desktop
             try
             {
                 while (ESP.portHandle.BytesToRead > 0)
-                    ESP.Buffer.Enqueue(Double.Parse(ESP.portHandle.ReadLine()));
+                    ESP.Buffer.Enqueue(Int32.Parse(ESP.portHandle.ReadLine()));
             }
             catch { }
         }
@@ -77,13 +79,14 @@ namespace ESP32_DSP_Desktop
                     ApplySettings();
 
 
-                   /* var legend  = dataPlot.Plot.Legend();
-                    legend.FontName = "Nirmala UI";
-                    legend.FontSize = 14;
-                    legend.FillColor = Color.FromArgb(49, 54, 58);
-                    legend.FontColor = Color.White;*/
+                    var legend  = dataPlot.Plot.Legend();
+                     legend.FontName = "Nirmala UI";
+                     legend.FontSize = 14;
+                     legend.FillColor = Color.FromArgb(49, 54, 58);
+                     legend.FontColor = Color.White;
 
-                    SignalPlot = dataPlot.Plot.AddSignal(ESP.PlotBuffer, label: "test");
+                    SignalPlot = dataPlot.Plot.AddSignal(ESP.PlotBuffer, label: "Raw");
+                    FilterPlot = dataPlot.Plot.AddSignal(ESP.FilterBuffer, label: "Filtered", color: Color.Red);
 
                     graphPlotTimer.Enabled = true;
                 }
@@ -111,9 +114,12 @@ namespace ESP32_DSP_Desktop
 
            if(ESP.Buffer.Count > 0)
             {
-               
-                while (ESP.Buffer.TryDequeue(out ESP.PlotBuffer[i]) && !ESP.Buffer.IsEmpty)
+                int temp;
+                while (ESP.Buffer.TryDequeue(out temp) && !ESP.Buffer.IsEmpty)
                 {
+                    ESP.PlotBuffer[i] = (double)(temp  >> 16);
+                    ESP.FilterBuffer[i] = (double)(temp & 0x0000FFFF);
+
                     i++;
 
                     if (i >= Settings.SampleRate)
@@ -121,7 +127,8 @@ namespace ESP32_DSP_Desktop
                         i = 0;  
                         break;    
                     }
-                    SignalPlot.MaxRenderIndex = i;
+                    SignalPlot.MaxRenderIndex = i-1;
+                    FilterPlot.MaxRenderIndex = i-1;
                 }
 
                 DoFFT();
@@ -150,6 +157,7 @@ namespace ESP32_DSP_Desktop
         private void DoFFT()
         {
             ESP.PlotBuffer[0] = 0;
+            ESP.FilterBuffer[0] = 0;
 
             Complex[] cSpectrum = dspFFT.Execute(ESP.PlotBuffer);
 
@@ -182,8 +190,9 @@ namespace ESP32_DSP_Desktop
             dataPlot.Plot.SetAxisLimitsX(0, Settings.SampleRate);
             
             ESP.PlotBuffer = new double[(int)Settings.SampleRate];
+            ESP.FilterBuffer = new double[(int)Settings.SampleRate];
 
-            if(ESP.IsPow2(Settings.SampleRate))
+            if (ESP.IsPow2(Settings.SampleRate))
                 dspFFT.Initialize(Settings.SampleRate);
             else
             {
