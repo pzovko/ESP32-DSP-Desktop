@@ -18,7 +18,10 @@ namespace ESP32_DSP_Desktop
         static ConcurrentQueue<int> buffer = new ConcurrentQueue<int>();
 
         static double[] dspSpectrum;
-        static double[] dspFreqSpan; 
+        static double[] dspFreqSpan;
+
+        static double[] dspSpectrumFil;
+        static double[] dspFreqSpanFil;
 
 
         public static string BluetoothPort
@@ -44,6 +47,8 @@ namespace ESP32_DSP_Desktop
         public static ConcurrentQueue<int> Buffer { get => buffer; set => buffer = value; }
         public static double[] DspFreqSpan { get => dspFreqSpan; set => dspFreqSpan = value; }
         public static double[] DspSpectrum { get => dspSpectrum; set => dspSpectrum = value; }
+        public static double[] DspFreqSpanFil { get => dspFreqSpanFil; set => dspFreqSpanFil = value; }
+        public static double[] DspSpectrumFil { get => dspSpectrumFil; set => dspSpectrumFil = value; }
 
         public static bool IsPow2(int x)
         {

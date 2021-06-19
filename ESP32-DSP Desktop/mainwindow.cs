@@ -18,6 +18,8 @@ namespace ESP32_DSP_Desktop
     public partial class MainWindow : Form
     {
         FFT dspFFT = new FFT();
+        FFT dspFFTfilter = new FFT();
+
         ScottPlot.Plottable.SignalPlot SignalPlot;
         ScottPlot.Plottable.SignalPlot FilterPlot;
 
@@ -160,13 +162,17 @@ namespace ESP32_DSP_Desktop
             ESP.FilterBuffer[0] = 0;
 
             Complex[] cSpectrum = dspFFT.Execute(ESP.PlotBuffer);
+            Complex[] cSpectrumFil = dspFFT.Execute(ESP.FilterBuffer);
 
             ESP.DspSpectrum= DSP.ConvertComplex.ToMagnitude(cSpectrum);
             ESP.DspFreqSpan = dspFFT.FrequencySpan(Settings.SampleRate);
 
+            ESP.DspSpectrumFil = DSP.ConvertComplex.ToMagnitude(cSpectrumFil);
+
             fftPlot.Plot.Clear();
 
             fftPlot.Plot.AddSignalXY(ESP.DspFreqSpan, ESP.DspSpectrum, Color.FromArgb(0, 122, 204));
+            fftPlot.Plot.AddSignalXY(ESP.DspFreqSpan, ESP.DspSpectrumFil, Color.Red);
 
             fftPlot.Plot.AxisAuto();
             fftPlot.RenderRequest();
@@ -193,12 +199,15 @@ namespace ESP32_DSP_Desktop
             ESP.FilterBuffer = new double[(int)Settings.SampleRate];
 
             if (ESP.IsPow2(Settings.SampleRate))
+            {
                 dspFFT.Initialize(Settings.SampleRate);
+                dspFFTfilter.Initialize(Settings.SampleRate);
+            }   
             else
             {
                 uint n = ESP.NextPow2(Settings.SampleRate);
                 dspFFT.Initialize(Settings.SampleRate, (n - Settings.SampleRate));
-
+                dspFFTfilter.Initialize(Settings.SampleRate, (n - Settings.SampleRate));
             }
         }
     }
