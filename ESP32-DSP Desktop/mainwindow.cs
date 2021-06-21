@@ -66,21 +66,18 @@ namespace ESP32_DSP_Desktop
             else
             {
                 ESP.BluetoothPort = avaiableDevices.SelectedItem.ToString();
-                ESP.baudRate = 115200;
 
                 try
                 {
-                    ESP.portHandle = new SerialPort(ESP.BluetoothPort, ESP.baudRate, Parity.None, 8, StopBits.One);
-                    ESP.portHandle.DataReceived += new SerialDataReceivedEventHandler(DataReceived);
-                    ESP.portHandle.Open();
 
-
+                    Reconnect();
+                    
                     dataPlot.Plot.Clear();
                     fftPlot.Plot.Clear();
 
                     ApplySettings();
 
-
+                    
                     var legend  = dataPlot.Plot.Legend();
                      legend.FontName = "Nirmala UI";
                      legend.FontSize = 14;
@@ -88,7 +85,9 @@ namespace ESP32_DSP_Desktop
                      legend.FontColor = Color.White;
 
                     SignalPlot = dataPlot.Plot.AddSignal(ESP.PlotBuffer, label: "Raw");
-                    FilterPlot = dataPlot.Plot.AddSignal(ESP.FilterBuffer, label: "Filtered", color: Color.Red);
+
+                    if(Settings.FilterEnable)
+                        FilterPlot = dataPlot.Plot.AddSignal(ESP.FilterBuffer, label: "Filtered", color: Color.FromArgb(222, 30, 39));
 
                     graphPlotTimer.Enabled = true;
                 }
@@ -101,7 +100,11 @@ namespace ESP32_DSP_Desktop
 
         private void disconnect_Click_1(object sender, EventArgs e)
         {
-            ESP.portHandle.Close();
+            connect.Text = "Connect";
+            graphPlotTimer.Enabled = false;
+            ESP.SettingsSent = false;
+            if(ESP.portHandle != null)
+                ESP.portHandle.Close();
         }
 
         private void formsPlot1_Load(object sender, EventArgs e)
@@ -116,25 +119,33 @@ namespace ESP32_DSP_Desktop
 
            if(ESP.Buffer.Count > 0)
             {
-                int temp;
-                while (ESP.Buffer.TryDequeue(out temp) && !ESP.Buffer.IsEmpty)
+                while (ESP.Buffer.TryDequeue(out int temp) && !ESP.Buffer.IsEmpty)
                 {
-                    ESP.PlotBuffer[i] = (double)(temp  >> 16);
-                    ESP.FilterBuffer[i] = (double)(temp & 0x0000FFFF);
+                    if(Settings.FilterEnable)
+                    {
+                        byte[] bytes = BitConverter.GetBytes(temp);
+                     
+                        ESP.PlotBuffer[i] = (double)BitConverter.ToInt16(bytes, 2);
+                        ESP.FilterBuffer[i] = (double)BitConverter.ToInt16(bytes, 0);
+
+                    }
+                    else
+                        ESP.PlotBuffer[i] = (double)temp;
+
+                    SignalPlot.MaxRenderIndex = i;
+                    if (Settings.FilterEnable)
+                        FilterPlot.MaxRenderIndex = i;
 
                     i++;
-
                     if (i >= Settings.SampleRate)
                     {
                         i = 0;  
                         break;    
                     }
-                    SignalPlot.MaxRenderIndex = i-1;
-                    FilterPlot.MaxRenderIndex = i-1;
                 }
 
                 DoFFT();
-
+                dataPlot.Plot.AxisAutoY();
                 dataPlot.RenderRequest();
             }
            graphPlotTimer.Enabled = true;
@@ -152,6 +163,12 @@ namespace ESP32_DSP_Desktop
 
         private void button4_Click(object sender, EventArgs e)
         {
+            if(ESP.portHandle != null)
+            {
+                if (ESP.portHandle.IsOpen)
+                    ESP.portHandle.Close();
+            }
+            
             Form settingsWindow = new settingswindow();
             settingsWindow.Show(this);
         }
@@ -159,21 +176,28 @@ namespace ESP32_DSP_Desktop
         private void DoFFT()
         {
             ESP.PlotBuffer[0] = 0;
-            ESP.FilterBuffer[0] = 0;
+            if (Settings.FilterEnable)
+                ESP.FilterBuffer[0] = 0;
 
             Complex[] cSpectrum = dspFFT.Execute(ESP.PlotBuffer);
-            Complex[] cSpectrumFil = dspFFT.Execute(ESP.FilterBuffer);
+            Complex[] cSpectrumFil;
 
+            if (Settings.FilterEnable)
+            {
+                cSpectrumFil = dspFFT.Execute(ESP.FilterBuffer);
+                ESP.DspSpectrumFil = DSP.ConvertComplex.ToMagnitude(cSpectrumFil);
+            }
+                
             ESP.DspSpectrum= DSP.ConvertComplex.ToMagnitude(cSpectrum);
             ESP.DspFreqSpan = dspFFT.FrequencySpan(Settings.SampleRate);
-
-            ESP.DspSpectrumFil = DSP.ConvertComplex.ToMagnitude(cSpectrumFil);
 
             fftPlot.Plot.Clear();
 
             fftPlot.Plot.AddSignalXY(ESP.DspFreqSpan, ESP.DspSpectrum, Color.FromArgb(0, 122, 204));
-            fftPlot.Plot.AddSignalXY(ESP.DspFreqSpan, ESP.DspSpectrumFil, Color.Red);
 
+            if (Settings.FilterEnable)
+                fftPlot.Plot.AddSignalXY(ESP.DspFreqSpan, ESP.DspSpectrumFil, Color.FromArgb(222, 30, 39));
+          //  dataPlot.Plot.AxisAuto();
             fftPlot.Plot.AxisAuto();
             fftPlot.RenderRequest();
         }
@@ -193,7 +217,7 @@ namespace ESP32_DSP_Desktop
             fftPlot.Plot.Clear();
 
             dataPlot.Plot.SetAxisLimitsY(0, 4095);
-            dataPlot.Plot.SetAxisLimitsX(0, Settings.SampleRate);
+            dataPlot.Plot.SetAxisLimitsX(0, (Settings.SampleRate/100));
             
             ESP.PlotBuffer = new double[(int)Settings.SampleRate];
             ESP.FilterBuffer = new double[(int)Settings.SampleRate];
@@ -208,6 +232,47 @@ namespace ESP32_DSP_Desktop
                 uint n = ESP.NextPow2(Settings.SampleRate);
                 dspFFT.Initialize(Settings.SampleRate, (n - Settings.SampleRate));
                 dspFFTfilter.Initialize(Settings.SampleRate, (n - Settings.SampleRate));
+            }
+        }
+
+        public void Reconnect()
+        {
+            if (ESP.SettingsSent)
+            {
+                if (ESP.portHandle != null)
+                    ESP.portHandle.Close();
+                ESP.portHandle = new SerialPort(ESP.BluetoothPort, Settings.BaudRate, Parity.None, 8, StopBits.One);
+                ESP.portHandle.DataReceived += new SerialDataReceivedEventHandler(DataReceived);
+                ESP.portHandle.Open();
+            }
+            else
+            {
+                if (ESP.portHandle != null)
+                    ESP.portHandle.Close();
+                ESP.portHandle = new SerialPort(ESP.BluetoothPort, Settings.BaudRate, Parity.None, 8, StopBits.One);
+                ESP.portHandle.Open();
+                
+                //ESP.portHandle.Write(Settings.FilterEnable.ToString());
+                ESP.portHandle.WriteLine(Settings.SampleRate.ToString());
+                ESP.portHandle.WriteLine((Settings.FilterEnable ? 1 : 0).ToString());
+
+                if (Settings.FilterEnable)
+                {
+                    ESP.portHandle.WriteLine(Settings.FilterLenght.ToString());
+                    for(int i = 0; i < Settings.FilterLenght; i++)
+                    {
+                        ESP.portHandle.WriteLine(Settings.FilterCoeff.ElementAt(i).ToString());
+                        Thread.Sleep(10);
+                    }
+                   //SEND COEFF
+                }     
+                    
+
+                
+                ESP.SettingsSent = true;   
+                ESP.portHandle.Close();
+
+                connect.Text = "Reconnect";
             }
         }
     }

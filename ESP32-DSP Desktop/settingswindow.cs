@@ -44,15 +44,16 @@ namespace ESP32_DSP_Desktop
         private void btnApply_Click(object sender, EventArgs e)
         {
             Settings.SampleRate = UInt16.Parse(tbmSampleRate.Text);
-            ESP.baudRate = Int32.Parse(cbBaudrate.SelectedItem.ToString());
+            Settings.BaudRate = Int32.Parse(cbBaudrate.SelectedItem.ToString());
+
+            if(Settings.FilterLenght > 0)
+                Settings.FilterEnable = true;
 
             var myParent = (MainWindow)this.Owner;
+          //  myParent.Reconnect();
             myParent.ApplySettings();
 
             this.Close();
-
-          //  if (Settings.FilterCoeff.Count == 0)
-          //      MessageBox.Show("No filter loaded", "Warning", MessageBoxButtons.OK);
         }
 
         private void btnLoadFIR_Click(object sender, EventArgs e)
@@ -81,7 +82,6 @@ namespace ESP32_DSP_Desktop
             Settings.FilterLenght = (ushort)Settings.FilterCoeff.Count;
 
             RedrawPlot();
-
         }
 
         private void cbDomain_CheckedChanged(object sender, EventArgs e)

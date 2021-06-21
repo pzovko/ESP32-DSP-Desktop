@@ -12,7 +12,6 @@ namespace ESP32_DSP_Desktop
     {
         static string btPort;
         static SerialPort hportHandle;
-        static int baud;
         static double[] plotBuffer;
         static double[] filterBuffer;
         static ConcurrentQueue<int> buffer = new ConcurrentQueue<int>();
@@ -22,6 +21,8 @@ namespace ESP32_DSP_Desktop
 
         static double[] dspSpectrumFil;
         static double[] dspFreqSpanFil;
+
+        static bool settingsSent = false;
 
 
         public static string BluetoothPort
@@ -36,12 +37,6 @@ namespace ESP32_DSP_Desktop
             get { return hportHandle; }
         }
 
-        public static int baudRate
-        {
-            set { baud = value; }
-            get { return baud; }
-        }
-
         public static double[] PlotBuffer { get => plotBuffer; set => plotBuffer = value; }
         public static double[] FilterBuffer { get => filterBuffer; set => filterBuffer = value; }
         public static ConcurrentQueue<int> Buffer { get => buffer; set => buffer = value; }
@@ -49,6 +44,7 @@ namespace ESP32_DSP_Desktop
         public static double[] DspSpectrum { get => dspSpectrum; set => dspSpectrum = value; }
         public static double[] DspFreqSpanFil { get => dspFreqSpanFil; set => dspFreqSpanFil = value; }
         public static double[] DspSpectrumFil { get => dspSpectrumFil; set => dspSpectrumFil = value; }
+        public static bool SettingsSent { get => settingsSent; set => settingsSent = value; }
 
         public static bool IsPow2(int x)
         {

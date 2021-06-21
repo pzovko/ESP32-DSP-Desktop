@@ -156,7 +156,7 @@
             this.tbmSampleRate.Font = new System.Drawing.Font("Nirmala UI", 10.25F, System.Drawing.FontStyle.Bold);
             this.tbmSampleRate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.tbmSampleRate.Location = new System.Drawing.Point(105, 32);
-            this.tbmSampleRate.Mask = "0000";
+            this.tbmSampleRate.Mask = "00000";
             this.tbmSampleRate.Name = "tbmSampleRate";
             this.tbmSampleRate.PromptChar = ' ';
             this.tbmSampleRate.Size = new System.Drawing.Size(94, 26);
