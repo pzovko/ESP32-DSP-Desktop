@@ -39,14 +39,11 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.dataPlot = new ScottPlot.FormsPlot();
             this.graphPlotTimer = new System.Windows.Forms.Timer(this.components);
             this.fftPlot = new ScottPlot.FormsPlot();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -56,7 +53,7 @@
             this.panel1.Controls.Add(this.avaiableDevices);
             this.panel1.Controls.Add(this.refresh);
             this.panel1.ForeColor = System.Drawing.Color.Black;
-            this.panel1.Location = new System.Drawing.Point(776, 359);
+            this.panel1.Location = new System.Drawing.Point(779, 423);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(200, 292);
             this.panel1.TabIndex = 0;
@@ -183,29 +180,6 @@
             this.button1.Text = "Start";
             this.button1.UseVisualStyleBackColor = true;
             // 
-            // statusStrip1
-            // 
-            this.statusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(65)))), ((int)(((byte)(73)))));
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statusLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 724);
-            this.statusStrip1.MinimumSize = new System.Drawing.Size(0, 44);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.statusStrip1.Size = new System.Drawing.Size(1024, 44);
-            this.statusStrip1.Stretch = false;
-            this.statusStrip1.TabIndex = 3;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // statusLabel
-            // 
-            this.statusLabel.Font = new System.Drawing.Font("Nirmala UI", 10F, System.Drawing.FontStyle.Bold);
-            this.statusLabel.ForeColor = System.Drawing.SystemColors.Menu;
-            this.statusLabel.Margin = new System.Windows.Forms.Padding(10, 3, 0, 2);
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(49, 39);
-            this.statusLabel.Text = "Status";
-            // 
             // dataPlot
             // 
             this.dataPlot.BackColor = System.Drawing.Color.Transparent;
@@ -223,7 +197,7 @@
             // fftPlot
             // 
             this.fftPlot.BackColor = System.Drawing.Color.Transparent;
-            this.fftPlot.Location = new System.Drawing.Point(12, 359);
+            this.fftPlot.Location = new System.Drawing.Point(12, 399);
             this.fftPlot.Name = "fftPlot";
             this.fftPlot.Size = new System.Drawing.Size(716, 345);
             this.fftPlot.TabIndex = 5;
@@ -238,7 +212,6 @@
             this.ControlBox = false;
             this.Controls.Add(this.fftPlot);
             this.Controls.Add(this.dataPlot);
-            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.panel1);
             this.ForeColor = System.Drawing.Color.Black;
@@ -251,10 +224,7 @@
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.panel1.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -267,8 +237,6 @@
         private System.Windows.Forms.Button refresh;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private ScottPlot.FormsPlot dataPlot;
         private System.Windows.Forms.Timer graphPlotTimer;
         private System.Windows.Forms.Button btnSettings;

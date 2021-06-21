@@ -9,7 +9,7 @@ namespace ESP32_DSP_Desktop
     class Settings
     {
         static int baudRate = 115200;
-        static UInt16 sampleRate = 20000;
+        static UInt16 sampleRate = 50000;
         static UInt16 filterLenght = 0;
         static List<double> filterCoeff = new List<double>();
 

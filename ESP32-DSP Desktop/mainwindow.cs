@@ -28,6 +28,10 @@ namespace ESP32_DSP_Desktop
         public MainWindow()
         {
             InitializeComponent();
+
+            var random = new Random();
+
+            Crypt.PrivateKey = (UInt32)random.Next(4);
  
             dataPlot.Plot.Style(Style.Gray1);
             dataPlot.Plot.XLabel("Samples per second");
@@ -47,7 +51,17 @@ namespace ESP32_DSP_Desktop
             try
             {
                 while (ESP.portHandle.BytesToRead > 0)
-                    ESP.Buffer.Enqueue(Int32.Parse(ESP.portHandle.ReadLine()));
+                {
+                    if(Crypt.PublicKeyESP  == 0)
+                    {
+                        Crypt.PublicKeyESP = UInt32.Parse(ESP.portHandle.ReadLine());
+                        Crypt.SharedKey = Crypt.GenSharedKey(Crypt.PublicKeyESP, Crypt.PrivateKey);
+                    }
+                    else
+                        ESP.Buffer.Enqueue(Int32.Parse(ESP.portHandle.ReadLine()));
+
+                }
+                    
             }
             catch { }
         }
@@ -69,7 +83,6 @@ namespace ESP32_DSP_Desktop
 
                 try
                 {
-
                     Reconnect();
                     
                     dataPlot.Plot.Clear();
@@ -123,14 +136,14 @@ namespace ESP32_DSP_Desktop
                 {
                     if(Settings.FilterEnable)
                     {
-                        byte[] bytes = BitConverter.GetBytes(temp);
+                        byte[] bytes = BitConverter.GetBytes((temp ^ Crypt.SharedKey));
                      
                         ESP.PlotBuffer[i] = (double)BitConverter.ToInt16(bytes, 2);
                         ESP.FilterBuffer[i] = (double)BitConverter.ToInt16(bytes, 0);
 
                     }
                     else
-                        ESP.PlotBuffer[i] = (double)temp;
+                        ESP.PlotBuffer[i] = (double)(temp^Crypt.SharedKey);
 
                     SignalPlot.MaxRenderIndex = i;
                     if (Settings.FilterEnable)
@@ -186,10 +199,13 @@ namespace ESP32_DSP_Desktop
             {
                 cSpectrumFil = dspFFT.Execute(ESP.FilterBuffer);
                 ESP.DspSpectrumFil = DSP.ConvertComplex.ToMagnitude(cSpectrumFil);
+               // ESP.DspSpectrumFil = DSP.Math.RemoveMean(ESP.DspSpectrumFil);
             }
                 
             ESP.DspSpectrum= DSP.ConvertComplex.ToMagnitude(cSpectrum);
             ESP.DspFreqSpan = dspFFT.FrequencySpan(Settings.SampleRate);
+
+            //ESP.DspSpectrum = DSP.Math.RemoveMean(ESP.DspSpectrum);
 
             fftPlot.Plot.Clear();
 
@@ -197,8 +213,9 @@ namespace ESP32_DSP_Desktop
 
             if (Settings.FilterEnable)
                 fftPlot.Plot.AddSignalXY(ESP.DspFreqSpan, ESP.DspSpectrumFil, Color.FromArgb(222, 30, 39));
-          //  dataPlot.Plot.AxisAuto();
+
             fftPlot.Plot.AxisAuto();
+            fftPlot.Plot.AxisAutoY();
             fftPlot.RenderRequest();
         }
 
@@ -247,12 +264,15 @@ namespace ESP32_DSP_Desktop
             }
             else
             {
+                Crypt.PublicKeyPC = Crypt.GenPublicKey(Crypt.PrivateKey);
+
                 if (ESP.portHandle != null)
                     ESP.portHandle.Close();
+
                 ESP.portHandle = new SerialPort(ESP.BluetoothPort, Settings.BaudRate, Parity.None, 8, StopBits.One);
                 ESP.portHandle.Open();
-                
-                //ESP.portHandle.Write(Settings.FilterEnable.ToString());
+
+                ESP.portHandle.WriteLine(Crypt.PublicKeyPC.ToString());
                 ESP.portHandle.WriteLine(Settings.SampleRate.ToString());
                 ESP.portHandle.WriteLine((Settings.FilterEnable ? 1 : 0).ToString());
 
@@ -264,11 +284,9 @@ namespace ESP32_DSP_Desktop
                         ESP.portHandle.WriteLine(Settings.FilterCoeff.ElementAt(i).ToString());
                         Thread.Sleep(10);
                     }
-                   //SEND COEFF
-                }     
-                    
+                }
 
-                
+
                 ESP.SettingsSent = true;   
                 ESP.portHandle.Close();
 

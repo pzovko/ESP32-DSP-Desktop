@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Crypt.cs" />
     <Compile Include="DSPLib.cs" />
     <Compile Include="ESP.cs" />
     <Compile Include="mainwindow.cs">
