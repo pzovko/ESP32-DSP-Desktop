@@ -100,7 +100,7 @@ namespace ESP32_DSP_Desktop
                     SignalPlot = dataPlot.Plot.AddSignal(ESP.PlotBuffer, label: "Raw");
 
                     if(Settings.FilterEnable)
-                        FilterPlot = dataPlot.Plot.AddSignal(ESP.FilterBuffer, label: "Filtered", color: Color.FromArgb(222, 30, 39));
+                        FilterPlot = dataPlot.Plot.AddSignal(ESP.FilterBuffer, label: "Filtered", color: Color.FromArgb(255, 255, 0)); //  Color.FromArgb(222, 30, 39)
 
                     graphPlotTimer.Enabled = true;
                 }
@@ -146,6 +146,7 @@ namespace ESP32_DSP_Desktop
                         ESP.PlotBuffer[i] = (double)(temp^Crypt.SharedKey);
 
                     SignalPlot.MaxRenderIndex = i;
+                    dataPlot.Plot.SetAxisLimitsX((SignalPlot.MaxRenderIndex - Settings.SampleRate/100), SignalPlot.MaxRenderIndex - 10);
                     if (Settings.FilterEnable)
                         FilterPlot.MaxRenderIndex = i;
 
@@ -209,10 +210,10 @@ namespace ESP32_DSP_Desktop
 
             fftPlot.Plot.Clear();
 
-            fftPlot.Plot.AddSignalXY(ESP.DspFreqSpan, ESP.DspSpectrum, Color.FromArgb(0, 122, 204));
+            fftPlot.Plot.AddSignalXY(ESP.DspFreqSpan, ESP.DspSpectrum, Color.FromArgb(0, 122, 204));//Color.FromArgb(0, 122, 204)
 
             if (Settings.FilterEnable)
-                fftPlot.Plot.AddSignalXY(ESP.DspFreqSpan, ESP.DspSpectrumFil, Color.FromArgb(222, 30, 39));
+                fftPlot.Plot.AddSignalXY(ESP.DspFreqSpan, ESP.DspSpectrumFil, Color.FromArgb(255, 255, 0));// Color.FromArgb(222, 30, 39)
 
             fftPlot.Plot.AxisAuto();
             fftPlot.Plot.AxisAutoY();
